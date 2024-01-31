@@ -18,39 +18,32 @@ import FormError from "../form-error";
 import FormSuccess from "../form-success";
 import { ResetPasswordSchema } from "@/schemas";
 import { fetcher } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import { ParsedUrlQuery } from "querystring";
+import { useSearchParams } from 'next/navigation'
 
-export const getServerSideProps = async ({
-  query,
-}: {
-  query: ParsedUrlQuery;
-}) => {
-  return {
-    props: {
-      token: query.token,
-    },
-  };
-};
-
-const changePassword = async (password: string, token: string | undefined) => {
-  if (token === undefined) {
+const changePassword = async (
+  email: string | null,
+  password: string,
+  token: string | null
+) => {
+  if (token === null || email === null) {
     return { error: "Could not reset password" };
   }
-  const data = await fetcher.post(process.env.NEXT_PUBLIC_BACKEND_ORIGIN + "/auth/reset-password", {
-    password: password,
-    token: token,
-  });
+  const data = await fetcher.post(
+    process.env.NEXT_PUBLIC_BACKEND_ORIGIN + "/auth/reset-password",
+    {
+      email: email,
+      password: password,
+      token: token,
+    }
+  );
 
   return data.data;
 };
 
-interface PasswordResetFormProps {
-  token?: string;
-}
-
-const PasswordResetForm = ({ token }: PasswordResetFormProps) => {
-  const router = useRouter();
+const PasswordResetForm = () => {
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
+  const email = searchParams.get('email');
   const [error, setError] = React.useState<string | undefined>("");
   const [success, setSuccess] = React.useState<string | undefined>("");
 
@@ -66,9 +59,14 @@ const PasswordResetForm = ({ token }: PasswordResetFormProps) => {
     setError("");
     setSuccess("");
 
-    await changePassword(data.password, token);
-  
-    setSuccess("Password changed successfully");
+    const { error, success } = await changePassword(email, data.password, token);
+
+    if (error) {
+      setError(error);
+      return ;
+    }
+
+    setSuccess(success);
   };
 
   return (

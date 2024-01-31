@@ -55,15 +55,24 @@ export class AuthService {
     if (!user) return { error: 'Email not found!' };
 
     const token = uuidv4();
-    await this.redisService.set(`reset-password-${token}`, user.id, 'EX', 600);
+    await this.redisService.set(
+      `reset-password-${token}`,
+      user.email,
+      'EX',
+      600,
+    );
     try {
+      const link =
+        this.configService.get('FRONTEND_ORIGIN') +
+        '/reset-password?email=' +
+        user.email +
+        '&token=' +
+        token;
       await this.emailService.sendMail({
         from: 'ayoub.anjaimi99@gmail.com',
         to: email,
         subject: 'Reset your password',
-        html: `<p>Click <a href=${this.configService.get(
-          'FRONTEND_ORIGIN',
-        )} + "/reset-password?token=${token}">here</a> to reset your password`,
+        html: `<p>Click <a href=${link}>here</a> to reset your password`,
       });
     } catch (e) {
       return { error: 'Email not sent!' };
@@ -72,22 +81,23 @@ export class AuthService {
   }
 
   async resetPassword(@Req() req: Request) {
-    const { token, password } = req.body as {
+    const { email, token, password } = req.body as {
+      email: string;
       token: string;
       password: string;
     };
 
-    const userId = await this.redisService.get(`reset-password-${token}`);
-    if (!userId) return { error: 'Invalid token!' };
+    const userEmail = await this.redisService.get(`reset-password-${token}`);
+    if (!userEmail || userEmail != email) return { error: 'Invalid token!' };
 
     const hashedPassword = await bcrypt.hash(password, 10);
     await this.prismaService.user.update({
-      where: { id: userId },
+      where: { email: userEmail },
       data: {
         password: hashedPassword,
       },
     });
-    return { success: 'Password updated!' };
+    return { success: 'Password changed successfully!' };
   }
 
   async register(@Req() req: Request, @Res() res: Response) {
@@ -106,23 +116,6 @@ export class AuthService {
         },
       });
 
-      const payload = {
-        iss: 'CodingTest',
-        email: user.email,
-        sub: user.email,
-      } satisfies JwtAuthPayload;
-
-      const accessToken = await this.jwtService.signAsync(payload, {
-        secret: this.configService.get('JWT_SECRET'),
-        expiresIn: AUTH_COOKIE_MAX_AGE,
-      });
-
-      res.cookie(AUTH_COOKIE_NAME, accessToken, {
-        httpOnly: true,
-        path: '/',
-        maxAge: AUTH_COOKIE_MAX_AGE * 1e3,
-      });
-
       res.send({ id: user.id, email: user.email });
     } catch (e) {
       res.send(null);
@@ -139,14 +132,14 @@ export class AuthService {
       const user = await this.getUserByEmail(email);
 
       if (!user) {
-        res.send({ error: 'Invalid credentials' });
+        res.send({ error: 'Invalid Email' });
         return;
       }
 
       const isPasswordValid = await bcrypt.compare(password, user.password);
 
       if (!isPasswordValid) {
-        res.send({ error: 'Invalid credentials' });
+        res.send({ error: 'Invalid Password' });
         return;
       }
 
@@ -169,7 +162,7 @@ export class AuthService {
 
       res.send({ success: 'You are logged in' });
     } catch (e) {
-      console.log('error: ', e);
+      res.send({ error: 'Cannot logged in' });
     }
   }
 

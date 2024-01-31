@@ -48,6 +48,11 @@ export class AuthController {
     this.authService.register(req, res);
   }
 
+  @Get('@me')
+  async getMe(@CurrentUser() user: User) {
+    return user;
+  }
+
   // TODO: remove later
   @Get('/token/:login')
   getToken(@Param('login') login: string) {

@@ -46,7 +46,6 @@ const ResetForm = () => {
 
     const values = await sendResetEmail(data.email);
     const { error, success } = values as { error: string; success: string };
-    console.log("values: ", values);
     if (success) {
       setSuccess(success);
       form.reset();

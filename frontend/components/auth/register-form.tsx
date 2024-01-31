@@ -19,7 +19,6 @@ import FormError from "../form-error";
 import FormSuccess from "../form-success";
 import { RegisterSchema } from "@/schemas";
 import type { User } from "@/types/user";
-import { useRouter } from "next/navigation";
 
 const userExist = async (email: string): Promise<boolean> => {
   return (
@@ -44,7 +43,6 @@ const register = async (email: string, password: string) => {
 };
 
 const RegisterForm = () => {
-  const router = useRouter();
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
 
@@ -63,21 +61,18 @@ const RegisterForm = () => {
 
     const ret = await userExist(data.email);
 
-    console.log("ret: ", ret);
-
     if (ret) {
       setError("Email already exist");
       return;
     }
     const user = await register(data.email, data.password);
     if (user) {
-      console.log("user exist");
+      form.reset();
       setSuccess("Account created successfully. Please login to continue.");
-      router.push("/login");
-      return;
     }
-
-    setError("Wrong Credentials");
+    if (!user)
+      setError("Wrong Credentials");
+    
   };
 
   return (

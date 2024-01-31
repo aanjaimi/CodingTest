@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { WsModule } from './ws/ws.module';
 import { RedisModule } from './redis/redis.module';
 import { EmailModule } from './email/email.module';
+import { UserModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { EmailModule } from './email/email.module';
     AuthModule,
     WsModule,
     EmailModule,
+    UserModule,
     RedisModule.forRootAsync({
       inject: [ConfigService],
       useFactory(configService: ConfigService) {

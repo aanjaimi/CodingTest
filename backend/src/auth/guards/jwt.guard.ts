@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
-import { AUTH_COOKIE_NAME } from '../auth.constants';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -18,7 +17,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     const req: Request = context.switchToHttp().getRequest();
 
-    const accessToken = req.cookies[AUTH_COOKIE_NAME] as string | null;
+    const accessToken = req.headers.cookie as string | null;
 
     const explicitExpiration = await this.redisService.hget(
       `token-${accessToken}`,
