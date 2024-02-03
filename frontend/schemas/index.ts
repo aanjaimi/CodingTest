@@ -35,3 +35,9 @@ export const ResetPasswordSchema = z
     message: "Passwords didn't match",
     path: ["ConfirmPassword"],
   });
+
+export const PostSchema = z.object({
+  topic: z.string().min(1, { message: "Topic is required" }),
+  title: z.string().min(1, { message: "Title is required" }),
+  content: z.string().min(1, { message: "Content is required" }),
+});

@@ -7,6 +7,7 @@ import { WsModule } from './ws/ws.module';
 import { RedisModule } from './redis/redis.module';
 import { EmailModule } from './email/email.module';
 import { UserModule } from './users/users.module';
+import { QuestionModule } from './questions/questions.module';
 // import { MinioModule } from './minio/minio.module';
 
 @Module({
@@ -21,6 +22,7 @@ import { UserModule } from './users/users.module';
     WsModule,
     EmailModule,
     UserModule,
+    QuestionModule,
     RedisModule.forRootAsync({
       inject: [ConfigService],
       useFactory(configService: ConfigService) {

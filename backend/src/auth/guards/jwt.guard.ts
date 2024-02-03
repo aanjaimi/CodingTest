@@ -13,8 +13,8 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     super();
   }
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    console.log('context: ', context);
     await super.canActivate(context);
-
     const req: Request = context.switchToHttp().getRequest();
 
     const accessToken = req.headers.cookie as string | null;

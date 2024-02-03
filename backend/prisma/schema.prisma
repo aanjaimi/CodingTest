@@ -27,16 +27,34 @@ model User {
   Favorite     Favorite[]
 }
 
+enum Topic {
+  GLOBAL
+  SPORTS
+  POLITICS
+  TECHNOLOGY
+  ENTERTAINMENT
+  BUSINESS
+  HEALTH
+  SCIENCE
+  EDUCATION
+  TRAVEL
+  FOOD
+  FASHION
+  LIFESTYLE
+  RELATIONSHIPS
+}
+
 model Question {
-  id           String         @id @default(uuid())
-  title        String
-  content      String
-  location     String
-  userId       String
-  answers      Answer[]
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  User         User           @relation(fields: [userId], references: [id])
+  id            String         @id @default(uuid())
+  title         String
+  content       String
+  topic         Topic          @default(GLOBAL)
+  location      String
+  userId        String
+  answers       Answer[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  User          User           @relation(fields: [userId], references: [id])
   questionLikes QuestionLike[]
   favorites     Favorite[]
 }

@@ -39,7 +39,7 @@ const QuestionData = () => {
   return (
     <div className="w-full h-full flex">
       {/* avatar */}
-      <div className="flex justify-center items-start mt-[10px] ml-[10px]">
+      <div className="w-[10%] flex justify-center items-start mt-[10px]">
         <Avatar>
           <AvatarImage src={state.user?.avatar.path} />
           <AvatarFallback>
@@ -49,8 +49,8 @@ const QuestionData = () => {
         </Avatar>
       </div>
       {/* content */}
-      <div className="w-full flex flex-col">
-        <div className="w-full flex justify-between mt-[10px] ml-[10px]">
+      <div className="w-[90%] flex flex-col">
+        <div className="w-full flex justify-between mt-[10px]">
           <div className="flex mt-[5px]">
             <div className="flex font-bold">
               {state.user?.firstName} {state.user?.lastName}
