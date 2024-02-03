@@ -20,29 +20,18 @@ import { LoginSchema } from "@/schemas";
 import { fetcher } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
-const login = async (
-  email: string,
-  password: string,
-  setError: Dispatch<SetStateAction<string | undefined>>,
-  setSuccess: Dispatch<SetStateAction<string | undefined>>
-) => {
-  const data = await fetcher.get(process.env.NEXT_PUBLIC_BACKEND_ORIGIN + "/auth/login", {
-    params: {
-      email: email,
-      password: password,
-    },
-  });
+const login = async (email: string, password: string) => {
+  const data = await fetcher.get(
+    process.env.NEXT_PUBLIC_BACKEND_ORIGIN + "/auth/login",
+    {
+      params: {
+        email: email,
+        password: password,
+      },
+    }
+  );
 
   return data.data;
-
-  // const { error, success } = data.data as { error: string; success: string };
-
-  // if (error) {
-  //   setError(error);
-  //   return;
-  // }
-
-  // setSuccess(success);
 };
 
 const LoginForm = () => {
@@ -62,7 +51,7 @@ const LoginForm = () => {
     setError("");
     setSuccess("");
 
-    const values = await login(data.email, data.password, setError, setSuccess);
+    const values = await login(data.email, data.password);
     const { error, success } = values as { error: string; success: string };
     if (success) {
       setSuccess(success);
@@ -88,18 +77,16 @@ const LoginForm = () => {
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Email or Username</FormLabel>
                   <FormControl {...field}>
                     <Input
                       {...field}
-                      type="email"
+                      type="text"
                       placeholder="john.doe@example.com"
                       className="font-normal"
                     />
                   </FormControl>
-                  <FormMessage>
-                    {form.formState.errors.email?.message}
-                  </FormMessage>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -117,9 +104,7 @@ const LoginForm = () => {
                       className="font-normal"
                     />
                   </FormControl>
-                  <FormMessage>
-                    {form.formState.errors.email?.message}
-                  </FormMessage>
+                  <FormMessage />
                 </FormItem>
               )}
             />

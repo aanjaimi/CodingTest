@@ -1,6 +1,17 @@
+export type Avatar = {
+  path: string;
+  minio: boolean;
+};
+
 export type User = {
   id: number;
+  username: string;
+  firstName: string;
+  lastName: string;
   email: string;
+  avatar: Avatar;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type State = {

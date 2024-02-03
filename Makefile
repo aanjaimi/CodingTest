@@ -13,6 +13,9 @@ build:
 	$(DOCKER_COMPOSE) up -d --build
 	$(MIGRATE)
 
+minio:
+	$(DOCKER_COMPOSE) up minio -d
+
 log:
 	$(DOCKER_COMPOSE) logs $(SERVICE_NAME) --follow
 

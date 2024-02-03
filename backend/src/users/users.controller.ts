@@ -1,9 +1,23 @@
-import { Controller, Get, UseGuards, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  UseGuards,
+  Param,
+  Query,
+  Body,
+  Patch,
+  HttpStatus,
+  UploadedFile,
+  UseInterceptors,
+  ParseFilePipeBuilder,
+} from '@nestjs/common';
 import { UserService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { User } from '@prisma/client';
 import { UserQueryDTO } from './users.dto';
 import { CurrentUser } from '../global/global.decorators';
+import { UserUpdateDTO } from './users.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('/users')
 @UseGuards(JwtAuthGuard)
@@ -18,5 +32,25 @@ export class UserController {
   @Get(':id')
   async findOne(@CurrentUser() user: User, @Param('id') login: string) {
     return await this.userService.getUser(user, login);
+  }
+
+  @Patch()
+  @UseInterceptors(FileInterceptor('avatar'))
+  async update(
+    @CurrentUser() user: User,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: /^image\/(jpg|jpeg|png|gif)$/,
+        })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+          fileIsRequired: false,
+        }),
+    )
+    avatar: Express.Multer.File,
+    @Body() body: UserUpdateDTO,
+  ) {
+    return await this.userService.updateUser(user, avatar, body);
   }
 }

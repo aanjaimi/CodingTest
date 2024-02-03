@@ -35,14 +35,22 @@ export class AuthService {
   }
 
   async checkExisting(@Req() req: Request) {
-    const { email } = req.query as { email: string };
+    const { email, username } = req.query as {
+      email: string;
+      username: string;
+    };
     try {
       const user = await this.getUserByEmail(email);
 
-      if (user) return true;
-      return false;
+      if (user) return { error: 'Email already exists!' };
+
+      const user2 = await this.prismaService.user.findUnique({
+        where: { username },
+      });
+
+      if (user2) return { error: 'Username already exists!' };
     } catch (e) {
-      return false;
+      return { success: 'Email and username are available!' };
     }
   }
 
@@ -101,8 +109,11 @@ export class AuthService {
   }
 
   async register(@Req() req: Request, @Res() res: Response) {
-    const { email, password } = req.body as {
+    const { email, username, firstName, lastName, password } = req.body as {
       email: string;
+      username: string;
+      firstName: string;
+      lastName: string;
       password: string;
     };
 
@@ -112,11 +123,24 @@ export class AuthService {
       const user = await this.prismaService.user.create({
         data: {
           email,
+          username,
+          firstName,
+          lastName,
           password: hashedPassword,
+          avatar: {
+            minio: true,
+            path: 'default-avatar.png',
+          },
         },
       });
 
-      res.send({ id: user.id, email: user.email });
+      res.send({
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      });
     } catch (e) {
       res.send(null);
     }
@@ -129,14 +153,24 @@ export class AuthService {
     };
 
     try {
-      const user = await this.getUserByEmail(email);
+      let userWithUsername = await this.prismaService.user.findUnique({
+        where: { username: email },
+      });
 
-      if (!user) {
-        res.send({ error: 'Invalid Email' });
-        return;
+      if (!userWithUsername) {
+        const userWithEmail = await this.getUserByEmail(email);
+
+        if (!userWithEmail) {
+          res.send({ error: 'Invalid Email or Username' });
+          return;
+        }
+        userWithUsername = userWithEmail;
       }
 
-      const isPasswordValid = await bcrypt.compare(password, user.password);
+      const isPasswordValid = await bcrypt.compare(
+        password,
+        userWithUsername.password,
+      );
 
       if (!isPasswordValid) {
         res.send({ error: 'Invalid Password' });
@@ -145,8 +179,8 @@ export class AuthService {
 
       const payload = {
         iss: 'CodingTest',
-        email: user.email,
-        sub: user.email,
+        email: userWithUsername.email,
+        sub: userWithUsername.email,
       } satisfies JwtAuthPayload;
 
       const accessToken = await this.jwtService.signAsync(payload, {
@@ -175,10 +209,9 @@ export class AuthService {
       1,
     );
 
-    const currentUser = {
-      id: 'dskljfksdjfks',
-      email: 'sdkfujsdjkfksdjfksd',
-    };
+    const currentUser = await this.jwtService.verifyAsync(accessToken, {
+      secret: this.configService.get('JWT_SECRET'),
+    });
 
     const allSocketIds = Object.keys(
       await this.redisService.hgetall(currentUser.id),
