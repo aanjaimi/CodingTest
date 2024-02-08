@@ -8,7 +8,11 @@ export class QuestionService {
   constructor(private prismaService: PrismaService) {}
 
   async getAllQuestions() {
-    const questions = await this.prismaService.question.findMany();
+    const questions = await this.prismaService.question.findMany({
+      include: {
+        user: true,
+      },
+    });
     return questions;
   }
 
@@ -16,6 +20,9 @@ export class QuestionService {
     const questions = await this.prismaService.question.findFirst({
       where: {
         userId: currUser.id,
+      },
+      include: {
+        user: true,
       },
     });
 
@@ -27,7 +34,7 @@ export class QuestionService {
       data: {
         title: body.title,
         content: body.content,
-        topic: body.topic as Topic,
+        topic: Topic[body.topic] as Topic,
         location: '',
         userId: body.userId,
       },

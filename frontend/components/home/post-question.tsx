@@ -1,14 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { IoMdPersonAdd } from "react-icons/io";
@@ -22,12 +14,6 @@ import { useStateContext } from "@/contexts/state-context";
 import { Textarea } from "../ui/textarea";
 import { ComboboxDemo } from "../ui/combobox";
 import { topics } from "@/constants/topic";
-import { fetcher } from "@/lib/utils";
-import { Topic } from "@/types/topic";
-import { User } from "@/types/user";
-import { Question } from "@/types/question";
-import { set } from "zod";
-import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PostSchema } from "@/schemas";
@@ -37,17 +23,17 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
+import { AddQuestion } from "@/actions/question";
 
 const PostQuestion = () => {
   const { state } = useStateContext();
-  const [title, setTitle] = useState<string | null>(null);
-  const [titleDisplay, setTitleDisplay] = useState<string | null>(null);
-  const [content, setContent] = useState<string | null>(null);
   const [value, setValue] = useState<string | null>(null);
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
+  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
 
   const firstNameLetter = state.user?.firstName[0].toUpperCase();
   const lastNameLetter = state.user?.lastName[0].toUpperCase();
@@ -61,22 +47,37 @@ const PostQuestion = () => {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof PostSchema>) => {
-    // if (content === null || content === "") {
-    //   return;
-    // }
-    try {
-      AddQuestion(data);
-    } catch (error) {
-      console.error("this error: ", error);
-    }
+  const checkFields = () => {
+  
+    const disableButton = !title || !content;
+
+    setIsButtonDisabled(disableButton);
+  };
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+    const disableButton = !e.target.value;
+    checkFields();
+    setIsButtonDisabled(disableButton);
+  };
+
+  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setContent(e.target.value);
+    const disableButton = !e.target.value;
+    checkFields();
+    setIsButtonDisabled(disableButton);
+  };
+
+  const onSubmit = async (data: z.infer<typeof PostSchema>) => {
+    await AddQuestion(data);
+    form.reset();
   };
 
   return (
     <div className="w-full h-full flex">
       {/* avatar */}
       <div className="w-[10%] flex justify-center items-start mt-[10px]">
-        <Avatar>
+        <Avatar className="border border-black">
           <AvatarImage src={state.user?.avatar.path} />
           <AvatarFallback>
             {firstNameLetter}
@@ -119,6 +120,7 @@ const PostQuestion = () => {
                         type="text"
                         placeholder="What's your question title?"
                         className="font-normal"
+                        onChange={handleTitleChange}
                       />
                     </FormControl>
                     <FormMessage />
@@ -135,6 +137,7 @@ const PostQuestion = () => {
                         {...field}
                         placeholder="What's your question?"
                         className="font-normal"
+                        onChange={handleContentChange}
                       />
                     </FormControl>
                     <FormMessage />
@@ -143,9 +146,11 @@ const PostQuestion = () => {
               />
             </div>
             <div className="space-y-4">
-              <Button type="submit" className="w-full">
-                Post
-              </Button>
+              <span className="flex justify-end">
+                <Button disabled={isButtonDisabled} type="submit">
+                  Post
+                </Button>
+              </span>
               <div></div>
             </div>
           </form>

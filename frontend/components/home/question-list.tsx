@@ -24,26 +24,18 @@ import { useStateContext } from "@/contexts/state-context";
 import { Textarea } from "../ui/textarea";
 import Image from "next/image";
 import QuestionData from "./question-data";
-import SkeletonDemo from "./skeleton-demo";
 import PostQuestion from "./post-question";
 import { useQuery } from "@tanstack/react-query";
 import { Question } from "@/types/question";
-import { fetcher } from "@/lib/utils";
-
-const handleClick = () => {};
-
-const GetQuestions = async () => {
-  const resp = await fetcher.get<Question[]>("/questions");
-  return resp.data;
-};
+import { GetQuestions } from "@/actions/question";
+import LoadingProfile from "../loading-profile";
 
 const QuestionsList = () => {
-  const { state } = useStateContext();
   const [questions, setQuestions] = useState<Question[] | []>([]);
 
   const questionQuery = useQuery({
     queryKey: ["questions"],
-    retry: false,
+    retry: true,
     queryFn: async () => {
       const questions = await GetQuestions();
       setQuestions(questions);
@@ -51,14 +43,16 @@ const QuestionsList = () => {
     },
   });
 
+  if (questionQuery.isLoading) return <LoadingProfile />
+
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
-      <div className="w-[50%] flex flex-row border border-black bg-white hover:bg-slate-200">
+      <div className="w-full border border-slate-100 flex flex-row bg-white hover:bg-slate-200">
         <PostQuestion />
       </div>
-      {questions.length ? <div className="w-[50%] flex flex-row border border-black bg-white hover:bg-slate-200">
+      {questions.length ? <div className="w-full flex flex-col">
         {questions.map((question) => (
-          <QuestionData key={question.id} />
+          <QuestionData key={question.id} question={question}/>
         ))}
       </div> : <></>}
     </div>

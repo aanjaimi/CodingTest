@@ -54,7 +54,7 @@ model Question {
   answers       Answer[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
-  User          User           @relation(fields: [userId], references: [id])
+  user          User           @relation(fields: [userId], references: [id])
   questionLikes QuestionLike[]
   favorites     Favorite[]
 }

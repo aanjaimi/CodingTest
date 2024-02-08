@@ -1,4 +1,5 @@
 import { Topic } from './topic';
+import { User } from './user';
 
 export type Question = {
   id: string;
@@ -7,5 +8,6 @@ export type Question = {
   topic: string;
   location: string;
   userId: string;
+  user: User;
   createdAt: string;
 };

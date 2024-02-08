@@ -20,7 +20,7 @@ import { CurrentUser } from '../global/global.decorators';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('/questions')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 export class QuestionController {
   constructor(private questionService: QuestionService) {}
 
@@ -36,7 +36,6 @@ export class QuestionController {
 
   @Post()
   async createQuestion(@Body() body: QuestionQueryDTO) {
-    console.log('body: ', body);
     return await this.questionService.createQuestion(body);
   }
 }

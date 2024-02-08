@@ -56,7 +56,7 @@ const LoginForm = () => {
     if (success) {
       setSuccess(success);
       form.reset();
-      router.push("/profile");
+      router.push("/home");
     }
     if (error) {
       setError(error);
