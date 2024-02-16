@@ -6,12 +6,14 @@ export const config = {
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  console.log(pathname);
+
   const url = request.nextUrl.clone();
 
   const cookie = request.cookies.get("auth-token");
 
   if (!cookie) return NextResponse.redirect(url.origin + "/");
-  
+
   const token = cookie?.value;
 
   try {
@@ -29,7 +31,6 @@ export async function middleware(request: NextRequest) {
     if (!response.ok) return NextResponse.redirect(url.origin + "/");
 
     return NextResponse.next();
-
   } catch (error) {
     return NextResponse.redirect(url.origin + "/");
   }

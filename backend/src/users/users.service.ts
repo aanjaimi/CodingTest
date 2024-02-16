@@ -1,9 +1,8 @@
-import { Injectable, ConflictException, HttpException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserQueryDTO } from './users.dto';
 import { Prisma, User } from '@prisma/client';
 import { UserUpdateDTO } from './users.dto';
-import * as speakeasy from 'speakeasy';
 
 @Injectable()
 export class UserService {
@@ -24,8 +23,12 @@ export class UserService {
       where,
       select: {
         id: true,
+        username: true,
+        firstName: true,
+        lastName: true,
         email: true,
         status: true,
+        avatar: true,
       },
     });
     return users;

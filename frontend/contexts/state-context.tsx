@@ -2,7 +2,7 @@
 import React, { createContext, useReducer, useContext } from "react";
 import type { User } from "@/types/user";
 import { useQuery } from "@tanstack/react-query";
-import { getCurrentUser } from "@/actions/getUser";
+import { getCurrentUser } from "@/actions/user";
 
 type State = {
   user: User | null;
@@ -38,7 +38,7 @@ const StateProvider = ({ children }: StateProviderProps) => {
   const value = { state, dispatch };
   const ret = useQuery({
     queryKey: ["users", "@me"],
-    retry: false,
+    retry: true,
     queryFn: async () => {
       const user = await getCurrentUser();
       dispatch({ type: "SET_USER", payload: user });

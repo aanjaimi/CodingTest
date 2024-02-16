@@ -5,6 +5,7 @@ import { cn } from "../lib/utils";
 import { StateProvider } from "@/contexts/state-context";
 import Providers from "@/components/providers";
 import React from "react";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +23,8 @@ export default function RootLayout({
     <Providers>
       <StateProvider>
         <html lang="en">
-          <body className={cn("bg", inter.className)}>{children}</body>
+          <body className={inter.className}>{children}</body>
+          <Toaster richColors />
         </html>
       </StateProvider>
     </Providers>

@@ -8,14 +8,19 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { HiDotsHorizontal } from "react-icons/hi";
+import { logOut } from "@/actions/user";
+import { toast } from "sonner";
 
 const ProfileLink = () => {
   const { state } = useStateContext();
 
-  // const handleRedirect = () => {
-  // window.location.href = `/profile/${state.user?.username}`;
-  //   router.push(`/profile/${state.user?.username}`);
-  // };
+  const handleLogOut = async () => {
+    const resp = await logOut();
+    if (resp == true)
+      toast.success("Logged out successfully");
+    else
+      toast.error("Error logging out");
+  };
 
   return (
     <Popover>
@@ -43,7 +48,9 @@ const ProfileLink = () => {
           </div>
         </div>
       </PopoverTrigger>
-      <PopoverContent className="font-bold">Log out @{state.user?.username}</PopoverContent>
+      <PopoverContent className="font-bold bg-white hover:bg-slate-100 cursor-pointer" onClick={handleLogOut}>
+        Log out @{state.user?.username}
+      </PopoverContent>
     </Popover>
   );
 };

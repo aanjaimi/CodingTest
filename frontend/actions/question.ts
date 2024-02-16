@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { fetcher } from "@/lib/utils";
 import { Question } from '@/types/question';
 import { PostSchema } from '@/schemas';
-import { getCurrentUser } from './getUser';
+import { getCurrentUser } from './user';
 import * as z from 'zod';
 
 export const AddQuestion = async (data: z.infer<typeof PostSchema>) => {

@@ -17,37 +17,47 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import PostQuestion from "./post-question";
+import { useRouter } from "next/navigation";
 
 const SideBarIcons = () => {
+  const router = useRouter();
   const [homeActive, setHomeActive] = useState(true);
   const [searchActive, setSearchActive] = useState(false);
   const [notificationsActive, setNotificationsActive] = useState(false);
   const [messagesActive, setMessagesActive] = useState(false);
   const [profileActive, setProfileActive] = useState(false);
 
-  const setOff = (setter: React.Dispatch<React.SetStateAction<boolean>>) => {
+  const setOff = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    setter: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
     setHomeActive(false);
     setSearchActive(false);
     setNotificationsActive(false);
     setMessagesActive(false);
     setProfileActive(false);
     setter(true);
+    const { id } = event.target as string | any;
+    console.log(id);
+    router.push(`/${id}`);
   };
 
   return (
     <div className="w-full h-full flex flex-col items-end justify-start space-y-6 mr-[30px]">
       {/* Home */}
       <Button
-        onClick={() => setOff(setHomeActive)}
+        name="home"
+        onClick={(e) => setOff(e, setHomeActive)}
         variant="ghost"
         className="lg:w-[120px] lg:h-[80x] w-16 h-16 lg:mr-[70px] flex-row flex items-center lg:justify-start justify-center border rounded-full border-none bg-white hover:bg-slate-200"
       >
         {homeActive ? (
-          <IoHomeSharp className="w-5 h-5 lg:mr-[15px]" />
+          <IoHomeSharp className="w-5 h-5 lg:mr-[15px]" name="home" />
         ) : (
-          <IoHomeOutline className="w-5 h-5 lg:mr-[15px]" />
+          <IoHomeOutline className="w-5 h-5 lg:mr-[15px]" name="home" />
         )}
         <span
+          id="home"
           className={`text-[18px] mt-[4px] ${
             homeActive ? "font-bold" : ""
           } hidden lg:flex`}
@@ -57,7 +67,8 @@ const SideBarIcons = () => {
       </Button>
       {/* Search */}
       <Button
-        onClick={() => setOff(setSearchActive)}
+        name="explore"
+        onClick={(e) => setOff(e, setSearchActive)}
         variant="ghost"
         className="lg:w-[140px] lg:h-[80x] w-16 h-16 lg:mr-[50px] flex-row flex items-center lg:justify-start justify-center border rounded-full border-none bg-white hover:bg-slate-200"
       >
@@ -67,6 +78,7 @@ const SideBarIcons = () => {
           <GoSearch className="w-5 h-5 lg:mr-[15px]" />
         )}
         <span
+          id="explore"
           className={`text-[18px] mt-[4px] ${
             searchActive ? "font-bold" : ""
           } hidden lg:flex`}
@@ -76,7 +88,8 @@ const SideBarIcons = () => {
       </Button>
       {/* Notifications */}
       <Button
-        onClick={() => setOff(setNotificationsActive)}
+        name="notifications"
+        onClick={(e) => setOff(e, setNotificationsActive)}
         variant="ghost"
         className="lg:w-[180px] lg:h-[80x] w-16 h-16 lg:mr-[10px] flex flex-row items-center lg:justify-start justify-center border rounded-full border-none bg-white hover:bg-slate-200"
       >
@@ -86,6 +99,7 @@ const SideBarIcons = () => {
           <IoMdNotificationsOutline className="w-5 h-5 lg:mr-[15px]" />
         )}
         <span
+          id="notifications"
           className={`text-[18px] mt-[4px] ${
             notificationsActive ? "font-bold" : ""
           } hidden lg:flex`}
@@ -95,7 +109,8 @@ const SideBarIcons = () => {
       </Button>
       {/* Messages */}
       <Button
-        onClick={() => setOff(setMessagesActive)}
+        name="messages"
+        onClick={(e) => setOff(e, setMessagesActive)}
         variant="ghost"
         className="lg:w-[160px] lg:h-[80x] w-16 h-16 lg:mr-[30px] flex flex-row items-center lg:justify-start justify-center border rounded-full border-none bg-white hover:bg-slate-200"
       >
@@ -105,6 +120,7 @@ const SideBarIcons = () => {
           <MdOutlineEmail className="w-5 h-5 lg:mr-[15px]" />
         )}
         <span
+          id="messages"
           className={`text-[18px] mt-[4px] ${
             messagesActive ? "font-bold" : ""
           } hidden lg:flex`}
@@ -114,7 +130,8 @@ const SideBarIcons = () => {
       </Button>
       {/* Profile */}
       <Button
-        onClick={() => setOff(setProfileActive)}
+        name="profile"
+        onClick={(e) => setOff(e, setProfileActive)}
         variant="ghost"
         className="lg:w-[140px] lg:h-[80x] w-16 h-16 lg:mr-[50px] flex flex-row items-center lg:justify-start justify-center border rounded-full border-none bg-white hover:bg-slate-200"
       >
@@ -124,6 +141,7 @@ const SideBarIcons = () => {
           <FaRegUser className="w-5 h-5 lg:mr-[15px]" />
         )}
         <span
+          id="profile"
           className={`text-[18px] mt-[4px] ${
             profileActive ? "font-bold" : ""
           } hidden lg:flex`}

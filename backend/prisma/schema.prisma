@@ -25,6 +25,13 @@ model User {
   Answer       Answer[]
   QuestionLike QuestionLike[]
   Favorite     Favorite[]
+  senderNotification   Notification[] @relation("sender")
+  receiverNotification Notification[] @relation("receiver")
+  Message      Message[]
+  // friends of the User
+  friends              Friend[]       @relation("userFriends")
+  // users who are Friends with this User
+  myFriends            Friend[]       @relation("friendsOfUser")
 }
 
 enum Topic {
@@ -82,4 +89,60 @@ model Answer {
   userId     String
   question   Question @relation(fields: [questionId], references: [id])
   questionId String
+}
+
+enum NotifType {
+  MESSAGE
+  FRIEND_REQUEST
+  FRIEND_ACCEPT
+}
+
+model Notification {
+  id      String    @id @default(cuid())
+  content Json?
+  type    NotifType @map("notif_type")
+
+  sender     User   @relation(name: "sender", fields: [senderId], references: [id])
+  senderId   String @map("sender_id")
+  receiver   User   @relation(name: "receiver", fields: [receiverId], references: [id])
+  receiverId String @map("receiver_id")
+
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  @@map("notifications")
+}
+
+enum FriendState {
+  NONE
+  BLOCKED
+  PENDING
+  ACCEPTED
+}
+
+model Friend {
+  id       String      @id @default(cuid())
+  state    FriendState
+  user     User        @relation(name: "userFriends", fields: [userId], references: [id])
+  userId   String      @map("user_id")
+  friend   User        @relation(name: "friendsOfUser", fields: [friendId], references: [id])
+  friendId String      @map("friend_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("friends")
+}
+
+model Message {
+  id      String @id @default(cuid())
+  content String
+
+  user      User   @relation(fields: [userId], references: [id])
+  userId    String @map("user_id")
+
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  @@map("messages")
 }

@@ -9,8 +9,8 @@ const ResetPasswordPage = ({
   token?: string;
 }) => {
   return (
-    <div className="w-screen h-screen flex items-center justify-center">
-      <PasswordResetForm token={token} email={email}/>
+    <div className="bg w-screen h-screen flex items-center justify-center">
+      <PasswordResetForm />
     </div>
   );
 };

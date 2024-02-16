@@ -201,30 +201,37 @@ export class AuthService {
   }
 
   async logout(req: Request, res: Response) {
-    const accessToken = req.cookies[AUTH_COOKIE_NAME];
+    const accessToken = req.body.token;
 
-    await this.redisService.hset(
-      `token-${accessToken}`,
-      'explicit-expiration',
-      1,
-    );
+    // await this.redisService.hset(
+    //   `token-${accessToken}`,
+    //   'explicit-expiration',
+    //   1,
+    // );
 
     const currentUser = await this.jwtService.verifyAsync(accessToken, {
       secret: this.configService.get('JWT_SECRET'),
     });
 
-    const allSocketIds = Object.keys(
-      await this.redisService.hgetall(currentUser.id),
-    );
-    this.closeConnections(allSocketIds);
-    if (allSocketIds.length) {
-      await this.redisService.hdel(currentUser.id, ...allSocketIds); // delete all socket session ids
+    if (currentUser.email == req.user.email) {
+      console.log('logging out1');
+      res.clearCookie(AUTH_COOKIE_NAME, {
+        httpOnly: true,
+        expires: new Date(0),
+        path: '/',
+      });
+      console.log('logging out2');
+      res.redirect(this.configService.get('FRONTEND_ORIGIN'));
+      console.log('logging out3');
     }
-    res.clearCookie(AUTH_COOKIE_NAME, {
-      httpOnly: true,
-      expires: new Date(1970), // magic trick !
-    });
-    res.redirect(this.configService.get('FRONTEND_ORIGIN'));
+
+    // const allSocketIds = Object.keys(
+    //   await this.redisService.hgetall(currentUser.id),
+    // );
+    // this.closeConnections(allSocketIds);
+    // if (allSocketIds.length) {
+    //   await this.redisService.hdel(currentUser.id, ...allSocketIds); // delete all socket session ids
+    // }
   }
 
   private closeConnections(socketIds: string[]) {

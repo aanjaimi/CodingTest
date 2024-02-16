@@ -4,7 +4,7 @@ export type Avatar = {
 };
 
 export type User = {
-  id: number;
+  id: string;
   username: string;
   firstName: string;
   lastName: string;

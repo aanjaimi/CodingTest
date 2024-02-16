@@ -20,7 +20,7 @@ import { FaRegStar, FaStar } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa";
 import { useStateContext } from "@/contexts/state-context";
 import { Question } from "@/types/question";
-import { getUserById } from "@/actions/getUser";
+import { getUserById } from "@/actions/user";
 
 type QuestionDataProps = {
   question: Question;
