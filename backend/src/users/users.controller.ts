@@ -29,9 +29,12 @@ export class UserController {
     return await this.userService.getUsers(user.id, query);
   }
 
-  @Get(':id')
-  async findOne(@CurrentUser() user: User, @Param('id') login: string) {
-    return await this.userService.getUser(user, login);
+  @Get(':username')
+  async findOne(
+    @CurrentUser() user: User,
+    @Param('username') username: string,
+  ) {
+    return await this.userService.getUser(user, username);
   }
 
   @Patch()

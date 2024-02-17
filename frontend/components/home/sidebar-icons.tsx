@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { Button } from "../ui/button";
 import { IoHomeOutline, IoHomeSharp } from "react-icons/io5";
 import { GoSearch } from "react-icons/go";
@@ -18,8 +18,10 @@ import {
 } from "@/components/ui/dialog";
 import PostQuestion from "./post-question";
 import { useRouter } from "next/navigation";
+import { useStateContext } from "@/contexts/state-context";
 
 const SideBarIcons = () => {
+  const { state } = useStateContext();
   const router = useRouter();
   const [homeActive, setHomeActive] = useState(true);
   const [searchActive, setSearchActive] = useState(false);
@@ -38,8 +40,10 @@ const SideBarIcons = () => {
     setProfileActive(false);
     setter(true);
     const { id } = event.target as string | any;
-    console.log(id);
-    router.push(`/${id}`);
+    let username = "";
+    if (id == "profile")
+      username += `/${state?.user?.username}`;
+    router.push(`/${id}/${username}`);
   };
 
   return (

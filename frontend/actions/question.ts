@@ -48,3 +48,21 @@ export const GetQuestions = async () => {
     return [];
   }
 }
+
+export const getQuestionsNumber = async (id: string) => {
+  const cookieStore = cookies();
+  const Cookie = cookieStore.get('auth-token'); 
+  const token = Cookie?.value;
+
+  try {
+    const resp = (await fetcher.get<Number>("/questions/size/" + id, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Cookie: token,
+      },
+    }))
+    return resp.data;
+  } catch (err) {
+    return 0;
+  }
+};

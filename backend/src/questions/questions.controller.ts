@@ -38,4 +38,9 @@ export class QuestionController {
   async createQuestion(@Body() body: QuestionQueryDTO) {
     return await this.questionService.createQuestion(body);
   }
+
+  @Get('/size/:id')
+  async getQuestionsSize(@Param('id') id: string) {
+    return await this.questionService.getQuestionsSize(id);
+  }
 }

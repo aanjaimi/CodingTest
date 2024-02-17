@@ -34,13 +34,13 @@ export class UserService {
     return users;
   }
 
-  async getUser(currUser: User, otherId: string) {
-    if (['@me', currUser.id, currUser.email].includes(otherId)) {
-      otherId = currUser.id;
+  async getUser(currUser: User, username: string) {
+    if (['@me', currUser.username, currUser.email].includes(username)) {
+      username = currUser.username;
     }
     const user = await this.prismaService.user.findFirst({
       where: {
-        id: otherId,
+        username: username,
       },
       include: {
         Question: true,

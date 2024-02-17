@@ -41,4 +41,13 @@ export class QuestionService {
     });
     return question;
   }
+
+  async getQuestionsSize(id: string) {
+    const questions = await this.prismaService.question.count({
+      where: {
+        userId: id,
+      },
+    });
+    return questions;
+  }
 }
