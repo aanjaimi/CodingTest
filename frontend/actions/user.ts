@@ -84,3 +84,24 @@ export const logOut = async () => {
     return false;
   }
 };
+
+export const updateUser = async (id: string, data: Partial<User>) => {
+  const cookieStore = cookies();
+  const Cookie = cookieStore.get("auth-token");
+  const token = Cookie?.value;
+
+  try {
+    const resp = await fetcher<User>("/users/" + id, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Cookie: token,
+      },
+      data,
+    });
+
+    return resp.data;
+  } catch (err) {
+    return null;
+  }
+}

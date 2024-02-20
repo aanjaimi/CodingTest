@@ -51,11 +51,14 @@ export class UserService {
     return user;
   }
 
-  async updateUser(
-    user: User,
-    avatar: Express.Multer.File,
-    body: UserUpdateDTO,
-  ) {
+  async updateUser(user: User, body: UserUpdateDTO) {
+    return await this.prismaService.user.update({
+      where: { id: user.id },
+      data: {
+        ...body,
+      },
+    });
+
     // const path = avatar?.path;
     // const { tfa, ...rest } = body;
     // if (tfa === true && user.totp['enabled']) throw new ConflictException();

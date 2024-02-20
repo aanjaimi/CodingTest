@@ -38,22 +38,22 @@ export class UserController {
   }
 
   @Patch()
-  @UseInterceptors(FileInterceptor('avatar'))
+  // @UseInterceptors(FileInterceptor('avatar'))
   async update(
     @CurrentUser() user: User,
-    @UploadedFile(
-      new ParseFilePipeBuilder()
-        .addFileTypeValidator({
-          fileType: /^image\/(jpg|jpeg|png|gif)$/,
-        })
-        .build({
-          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-          fileIsRequired: false,
-        }),
-    )
-    avatar: Express.Multer.File,
+    // @UploadedFile(
+    //   new ParseFilePipeBuilder()
+    //     .addFileTypeValidator({
+    //       fileType: /^image\/(jpg|jpeg|png|gif)$/,
+    //     })
+    //     .build({
+    //       errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+    //       fileIsRequired: false,
+    //     }),
+    // )
+    // avatar: Express.Multer.File,
     @Body() body: UserUpdateDTO,
   ) {
-    return await this.userService.updateUser(user, avatar, body);
+    return await this.userService.updateUser(user, body);
   }
 }

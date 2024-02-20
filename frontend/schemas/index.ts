@@ -41,3 +41,11 @@ export const PostSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
   content: z.string().min(1, { message: "Content is required" }),
 });
+
+export const EditProfileSchema = z.object({
+  firstName: z.string().min(1, { message: "First name is required" }),
+  lastName: z.string().min(1, { message: "Last name is required" }),
+  bio: z.string(),
+  location: z.string(),
+  birthday: z.date(),
+});

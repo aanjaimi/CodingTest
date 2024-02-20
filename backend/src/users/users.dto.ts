@@ -4,6 +4,7 @@ import {
   IsOptional,
   MinLength,
   MaxLength,
+  IsDate,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 
@@ -16,14 +17,26 @@ export class UserQueryDTO {
 }
 
 export class UserUpdateDTO {
+  @IsString({})
+  @MinLength(1)
+  @MaxLength(32)
+  firstName: string;
+
+  @IsString({})
+  @MinLength(1)
+  @MaxLength(32)
+  lastName: string;
+
   @IsOptional()
   @IsString({})
-  @MinLength(4)
-  @MaxLength(32)
-  displayname: string;
+  bio: string;
 
-  @Transform((obj) => obj.value === 'true' || obj.value === true)
-  @IsBoolean()
   @IsOptional()
-  'tfa': boolean;
+  @IsString({})
+  location: string;
+
+  @IsOptional()
+  @IsString({})
+  @Transform(({ value }) => new Date(value))
+  birthday: Date;
 }

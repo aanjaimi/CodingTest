@@ -17,6 +17,9 @@ model User {
   lastName     String
   email        String         @unique
   password     String
+  Bio          String
+  birthday     DateTime
+  location     String
   status       String         @default("OFFLINE")
   avatar       Json
   createdAt    DateTime       @default(now())
