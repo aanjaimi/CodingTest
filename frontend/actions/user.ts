@@ -90,9 +90,11 @@ export const updateUser = async (id: string, data: Partial<User>) => {
   const Cookie = cookieStore.get("auth-token");
   const token = Cookie?.value;
 
+  console.log("data: ", data);
+
   try {
     const resp = await fetcher<User>("/users/" + id, {
-      method: "PUT",
+      method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
         Cookie: token,
@@ -102,6 +104,7 @@ export const updateUser = async (id: string, data: Partial<User>) => {
 
     return resp.data;
   } catch (err) {
+    console.error('Errrror: ', err);
     return null;
   }
 }

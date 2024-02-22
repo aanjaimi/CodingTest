@@ -25,9 +25,6 @@ import { updateUser } from "@/actions/user";
 const ProfileForm = () => {
   const router = useRouter();
   const { state } = useStateContext();
-  const [date, setDate] = useState<Date | undefined>(
-    state.user?.birthday || new Date()
-  );
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
 
@@ -38,7 +35,7 @@ const ProfileForm = () => {
       lastName: state.user?.lastName || "",
       bio: state.user?.bio || "",
       location: state.user?.location || "",
-      birthday: state.user?.birthday || new Date(),
+      birthday: state.user?.birthday || undefined,
     },
   });
 
@@ -51,7 +48,7 @@ const ProfileForm = () => {
     if (user) {
       setSuccess("Profile updated successfully");
       form.reset();
-      router.push(`/profile/${state?.user?.id}`);
+      router.push(`/profile/${state?.user?.username}`);
     } else {
       setError("An error occured while updating your profile");
     }
@@ -141,8 +138,8 @@ const ProfileForm = () => {
                   <FormControl {...field}>
                     <Calendar
                       mode="single"
-                      selected={date}
-                      onSelect={setDate}
+                      selected={field.value}
+                      onSelect={field.onChange}
                       className="rounded-md border"
                     />
                   </FormControl>
@@ -151,7 +148,7 @@ const ProfileForm = () => {
               )}
             />
           </div>
-          <div className="pt-[4px] flex items-end justify-end">
+          <div className="pt-[4px] flex flex-col items-start justify-start space-y-4">
             <FormError message={error} />
             <FormSuccess message={success} />
             <Button type="submit" className="">

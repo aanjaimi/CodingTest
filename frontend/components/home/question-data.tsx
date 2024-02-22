@@ -1,10 +1,9 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -20,14 +19,21 @@ import { FaRegStar, FaStar } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa";
 import { useStateContext } from "@/contexts/state-context";
 import { Question } from "@/types/question";
-import { getUserById } from "@/actions/user";
+import { addLike, getLike, removeLike } from "@/actions/like";
+import { addFavorite, getFavorite, removeFavorite } from "@/actions/favorite";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import { Textarea } from "../ui/textarea";
 
 type QuestionDataProps = {
   question: Question;
 };
 
 const QuestionData = ({ question }: QuestionDataProps) => {
-
+  const { state } = useStateContext();
+  const [like, setLike] = useState(false);
+  const [favorite, setFavorite] = useState(false);
+  const [answer, setAnswer] = useState(false);
+  const [disabled, setDisabled] = useState(true);
   const firstNameLetter = question.user?.firstName[0].toUpperCase();
   const lastNameLetter = question.user?.lastName[0].toUpperCase();
   const date = question?.createdAt.slice(0, 10) as string;
@@ -38,6 +44,72 @@ const QuestionData = ({ question }: QuestionDataProps) => {
     month: "short",
     day: "numeric",
   });
+
+  useEffect(() => {
+    if (!state?.user?.id) return;
+    getLike(state?.user?.id, question)
+      .then((res) => {
+        setLike(res);
+      })
+      .catch((err) => {
+        console.log("Get like failed: ", err);
+      });
+    getFavorite(state?.user?.id, question)
+      .then((res) => {
+        setFavorite(res);
+      })
+      .catch((err) => {
+        console.log("Get favorite failed: ", err);
+      });
+  }, [state.user, question]);
+
+  const handleClickLike = () => {
+    if (!state?.user?.id) return;
+    if (!like) {
+      addLike(state?.user?.id, question)
+        .then((res) => {
+          console.log("Add successfully: ", res);
+        })
+        .catch((err) => {
+          console.log("Add failed: ", err);
+        });
+    } else {
+      removeLike(state?.user?.id, question)
+        .then((res) => {
+          console.log("Remove successfully: ", res);
+        })
+        .catch((err) => {
+          console.log("Remove failed: ", err);
+        });
+    }
+    setLike(!like);
+  };
+
+  const handleClickFavorite = () => {
+    if (!state?.user?.id) return;
+    if (!favorite) {
+      addFavorite(state?.user?.id, question)
+        .then((res) => {
+          console.log("Add successfully: ", res);
+        })
+        .catch((err) => {
+          console.log("Add failed: ", err);
+        });
+    } else {
+      removeFavorite(state?.user?.id, question)
+        .then((res) => {
+          console.log("Remove successfully: ", res);
+        })
+        .catch((err) => {
+          console.log("Remove failed: ", err);
+        });
+    }
+    setFavorite(!favorite);
+  };
+
+  const handleClickAnswer = () => {
+    setAnswer(!answer);
+  };
 
   return (
     <div className="w-full h-full flex border border-slate-100 bg-white hover:bg-slate-200">
@@ -106,25 +178,57 @@ const QuestionData = ({ question }: QuestionDataProps) => {
         <div className="ml-[10px] flex flex-col mr-[50px]">
           <h1 className="font-bold ml-[10px]">{question.title}</h1>
           <div className="flex flex-col items-center justify-center">
-            <div className="flex justify-start">
-              {question.content}
-            </div>
+            <div className="flex justify-start">{question.content}</div>
           </div>
         </div>
         {/* Question reacts and answers */}
         <div className="flex space-x-4 justify-between mr-[50px] my-[10px]">
-          <Button variant="ghost" className="hover:bg-blue-200">
-            <BiLike />
-            <span className="ml-[2px]">Like</span>
+          <Button
+            onClick={handleClickLike}
+            variant="ghost"
+            className="hover:bg-blue-200"
+          >
+            {!like ? <BiLike /> : <BiSolidLike />}
+            <span className="ml-[2px]">{!like ? <>Like</> : <>Unlike</>}</span>
           </Button>
-          <Button variant="ghost" className="hover:bg-blue-200">
-            <FaRegStar />
-            <span className="ml-[2px]">Add to favorite</span>
+          <Button
+            onClick={handleClickFavorite}
+            variant="ghost"
+            className="hover:bg-blue-200"
+          >
+            {!favorite ? <FaRegStar /> : <FaStar />}
+            <span className="ml-[2px]">
+              {!favorite ? <>Add to favorite</> : <>Remove from favorite</>}
+            </span>
           </Button>
-          <Button variant="ghost" className="hover:bg-blue-200">
-            <FaRegComment />
-            <span className="ml-[2px]">Answer</span>
-          </Button>
+          <Dialog>
+            <DialogTrigger>
+              <Button
+                onClick={handleClickAnswer}
+                variant="ghost"
+                className="hover:bg-blue-200"
+              >
+                <FaRegComment />
+                <span className="ml-[2px]">Answer</span>
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <div className="flex flex-col items-start">
+                <h1 className="font-bold text-">Your answer</h1>
+                <Textarea
+                  className="w-[80%] h-[100px] border border-slate-100 rounded-lg"
+                  placeholder="Post your answer"
+                ></Textarea>
+                <Button
+                  disabled={disabled}
+                  variant="default"
+                  className="w-[80%] mt-[10px] hover:bg-blue-200"
+                >
+                  Submit
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </div>

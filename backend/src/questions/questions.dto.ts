@@ -27,3 +27,8 @@ export class QuestionUpdateDTO {
   // @IsOptional()
   // 'tfa': boolean;
 }
+
+export class QuestionLikeDTO {
+  @IsString()
+  questionId: string;
+}

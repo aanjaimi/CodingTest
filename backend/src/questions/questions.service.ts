@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { QuestionQueryDTO, QuestionUpdateDTO } from './questions.dto';
-import { Prisma, Question, Topic, User } from '@prisma/client';
+import { QuestionLikeDTO, QuestionQueryDTO } from './questions.dto';
+import { Topic, User } from '@prisma/client';
 
 @Injectable()
 export class QuestionService {
@@ -42,12 +42,78 @@ export class QuestionService {
     return question;
   }
 
-  async getQuestionsSize(id: string) {
-    const questions = await this.prismaService.question.count({
+  async getQuestionsOfUser(id: string) {
+    const questions = await this.prismaService.question.findMany({
       where: {
         userId: id,
       },
     });
     return questions;
+  }
+
+  async getLike(id: string, body: QuestionLikeDTO) {
+    const { questionId } = body;
+    const question = await this.prismaService.questionLike.count({
+      where: {
+        userId: id,
+        questionId: questionId,
+      },
+    });
+    return question > 0 ? true : false;
+  }
+
+  async addLike(id: string, body: QuestionLikeDTO) {
+    const { questionId } = body;
+    const question = await this.prismaService.questionLike.create({
+      data: {
+        userId: id,
+        questionId: questionId,
+      },
+    });
+    return question;
+  }
+
+  async removeLike(id: string, body: QuestionLikeDTO) {
+    const { questionId } = body;
+    const question = await this.prismaService.questionLike.deleteMany({
+      where: {
+        userId: id,
+        questionId: questionId,
+      },
+    });
+    return question;
+  }
+
+  async getFavorite(id: string, body: QuestionLikeDTO) {
+    const { questionId } = body;
+    const question = await this.prismaService.favorite.count({
+      where: {
+        userId: id,
+        questionId: questionId,
+      },
+    });
+    return question > 0 ? true : false;
+  }
+
+  async addFavorite(id: string, body: QuestionLikeDTO) {
+    const { questionId } = body;
+    const question = await this.prismaService.favorite.create({
+      data: {
+        userId: id,
+        questionId: questionId,
+      },
+    });
+    return question;
+  }
+
+  async removeFavorite(id: string, body: QuestionLikeDTO) {
+    const { questionId } = body;
+    const question = await this.prismaService.favorite.deleteMany({
+      where: {
+        userId: id,
+        questionId: questionId,
+      },
+    });
+    return question;
   }
 }

@@ -131,6 +131,9 @@ export class AuthService {
             minio: true,
             path: 'default-avatar.png',
           },
+          bio: '',
+          location: '',
+          birthday: null,
         },
       });
 
@@ -140,8 +143,12 @@ export class AuthService {
         username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,
+        bio: user.bio,
+        location: user.location,
+        birthday: user.birthday,
       });
     } catch (e) {
+      console.log(e);
       res.send(null);
     }
   }

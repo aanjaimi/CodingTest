@@ -47,5 +47,5 @@ export const EditProfileSchema = z.object({
   lastName: z.string().min(1, { message: "Last name is required" }),
   bio: z.string(),
   location: z.string(),
-  birthday: z.date(),
+  birthday: z.date().optional(),
 });

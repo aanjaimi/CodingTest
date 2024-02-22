@@ -37,7 +37,7 @@ export class UserController {
     return await this.userService.getUser(user, username);
   }
 
-  @Patch()
+  @Patch(':username')
   // @UseInterceptors(FileInterceptor('avatar'))
   async update(
     @CurrentUser() user: User,
@@ -52,8 +52,18 @@ export class UserController {
     //     }),
     // )
     // avatar: Express.Multer.File,
-    @Body() body: UserUpdateDTO,
+    @Body() body: any,
   ) {
     return await this.userService.updateUser(user, body);
+  }
+
+  @Get('followers/:id')
+  async getFollowers(@Param('id') id: string) {
+    return await this.userService.getFollowers(id);
+  }
+
+  @Get('following/:id')
+  async getFollowing(@Param('id') id: string) {
+    return await this.userService.getFollowing(id);
   }
 }

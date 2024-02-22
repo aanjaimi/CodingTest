@@ -37,7 +37,7 @@ export const GetQuestions = async () => {
   const token = Cookie?.value;
 
   try {
-    const resp = (await fetcher.get<Question[] | []>("/questions", {
+    const resp = (await fetcher.get<Question[]>("/questions", {
       headers: {
         Authorization: `Bearer ${token}`,
         Cookie: token,
@@ -49,13 +49,13 @@ export const GetQuestions = async () => {
   }
 }
 
-export const getQuestionsNumber = async (id: string) => {
+export const getQuestionsOfUser = async (id: string) => {
   const cookieStore = cookies();
   const Cookie = cookieStore.get('auth-token'); 
   const token = Cookie?.value;
 
   try {
-    const resp = (await fetcher.get<Number>("/questions/size/" + id, {
+    const resp = (await fetcher.get<Question[]>("/questions/user/" + id, {
       headers: {
         Authorization: `Bearer ${token}`,
         Cookie: token,
@@ -63,6 +63,6 @@ export const getQuestionsNumber = async (id: string) => {
     }))
     return resp.data;
   } catch (err) {
-    return 0;
+    return [];
   }
 };
