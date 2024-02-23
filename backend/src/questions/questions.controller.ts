@@ -16,7 +16,12 @@ import {
 import { QuestionService } from './questions.service';
 // import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { User } from '@prisma/client';
-import { QuestionLikeDTO, QuestionQueryDTO } from './questions.dto';
+import {
+  QuestionAnswerDTO,
+  QuestionAnswerUpdateDTO,
+  QuestionLikeDTO,
+  QuestionQueryDTO,
+} from './questions.dto';
 import { CurrentUser } from '../global/global.decorators';
 // import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -73,5 +78,23 @@ export class QuestionController {
   @Delete('/favorite/:id')
   async removeFavorite(@Param('id') id: string, @Body() body: QuestionLikeDTO) {
     return await this.questionService.removeFavorite(id, body);
+  }
+
+  @Post('/answer/:id')
+  async addAnswer(@Param('id') id: string, @Body() body: QuestionAnswerDTO) {
+    return await this.questionService.addAnswer(id, body);
+  }
+
+  @Patch('/answer/:id')
+  async updateAnswer(
+    @Param('id') id: string,
+    @Body() body: QuestionAnswerUpdateDTO,
+  ) {
+    return await this.questionService.updateAnswer(id, body);
+  }
+
+  @Delete('/answer/:id')
+  async removeAnswer(@Param('id') id: string) {
+    return await this.questionService.removeAnswer(id);
   }
 }

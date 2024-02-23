@@ -24,10 +24,10 @@ model User {
   avatar               Json
   createdAt            DateTime       @default(now())
   updatedAt            DateTime       @updatedAt
-  Question             Question[]
-  Answer               Answer[]
-  QuestionLike         QuestionLike[]
-  Favorite             Favorite[]
+  questions            Question[]
+  answers              Answer[]
+  questionLikes        QuestionLike[]
+  favorites            Favorite[]
   senderNotification   Notification[] @relation("sender")
   receiverNotification Notification[] @relation("receiver")
   Message              Message[]

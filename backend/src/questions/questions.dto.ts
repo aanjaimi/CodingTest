@@ -32,3 +32,16 @@ export class QuestionLikeDTO {
   @IsString()
   questionId: string;
 }
+
+export class QuestionAnswerDTO {
+  @IsString()
+  questionId: string;
+
+  @IsString()
+  content: string;
+}
+
+export class QuestionAnswerUpdateDTO {
+  @IsString()
+  content: string;
+}

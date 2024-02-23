@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserQueryDTO } from './users.dto';
 import { Prisma, User } from '@prisma/client';
-import { UserUpdateDTO } from './users.dto';
 
 @Injectable()
 export class UserService {
@@ -46,8 +45,10 @@ export class UserService {
         username: username,
       },
       include: {
-        Question: true,
-        Answer: true,
+        questions: true,
+        questionLikes: true,
+        answers: true,
+        favorites: true,
       },
     });
 

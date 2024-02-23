@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { QuestionLikeDTO, QuestionQueryDTO } from './questions.dto';
+import {
+  QuestionAnswerDTO,
+  QuestionAnswerUpdateDTO,
+  QuestionLikeDTO,
+  QuestionQueryDTO,
+} from './questions.dto';
 import { Topic, User } from '@prisma/client';
 
 @Injectable()
@@ -11,6 +16,9 @@ export class QuestionService {
     const questions = await this.prismaService.question.findMany({
       include: {
         user: true,
+        answers: true,
+        favorites: true,
+        questionLikes: true,
       },
     });
     return questions;
@@ -23,6 +31,9 @@ export class QuestionService {
       },
       include: {
         user: true,
+        answers: true,
+        favorites: true,
+        questionLikes: true,
       },
     });
 
@@ -46,6 +57,12 @@ export class QuestionService {
     const questions = await this.prismaService.question.findMany({
       where: {
         userId: id,
+      },
+      include: {
+        user: true,
+        answers: true,
+        favorites: true,
+        questionLikes: true,
       },
     });
     return questions;
@@ -112,6 +129,40 @@ export class QuestionService {
       where: {
         userId: id,
         questionId: questionId,
+      },
+    });
+    return question;
+  }
+
+  async addAnswer(id: string, body: QuestionAnswerDTO) {
+    const { questionId, content } = body;
+    const question = await this.prismaService.answer.create({
+      data: {
+        userId: id,
+        content: content,
+        questionId: questionId,
+      },
+    });
+    return question;
+  }
+
+  async removeAnswer(id: string) {
+    const question = await this.prismaService.answer.deleteMany({
+      where: {
+        id: id,
+      },
+    });
+    return question;
+  }
+
+  async updateAnswer(id: string, body: QuestionAnswerUpdateDTO) {
+    const { content } = body;
+    const question = await this.prismaService.answer.update({
+      where: {
+        id: id,
+      },
+      data: {
+        content: content,
       },
     });
     return question;

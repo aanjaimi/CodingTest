@@ -11,7 +11,9 @@ import Image from "next/image";
 import EditProfile from "./edit-profile";
 import { getFollowers, getFollowing } from "@/actions/follow";
 import { Question } from "@/types/question";
-import { Button } from "../ui/button";
+import ProfileContent from "./profile-content";
+import { useStateContext } from "@/contexts/state-context";
+import ProfileDialog from "./profile-dialog";
 
 function formatDateOfBirth(date: Date | undefined) {
   if (!date) return null;
@@ -31,6 +33,8 @@ type ProfileDataProps = {
 };
 
 const ProfileData = ({ user }: ProfileDataProps) => {
+  const { state } = useStateContext();
+  const isMe = state?.user?.id === user?.id;
   const router = useRouter();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [followers, setFollowers] = useState<User[]>([]);
@@ -78,7 +82,7 @@ const ProfileData = ({ user }: ProfileDataProps) => {
         </div>
       </div>
       {/* profile informations */}
-      <div className="relative w-full flex flex-col">
+      <div className="relative w-full h-full flex flex-col">
         <Image src="/cover.png" alt="cover image" width={1000} height={80} />
         <div className="w-[110px] h-[110px] p-1 absolute mt-[100px] ml-[20px] rounded-full bg-white">
           <Image
@@ -90,7 +94,7 @@ const ProfileData = ({ user }: ProfileDataProps) => {
           />
         </div>
         <div className="flex items-start justify-end p-4">
-          <EditProfile />
+          {isMe ? <EditProfile /> : <ProfileDialog user={user} />}
         </div>
         <div className="p-4 flex flex-col space-y-4">
           <div>
@@ -134,33 +138,7 @@ const ProfileData = ({ user }: ProfileDataProps) => {
           </div>
         </div>
         {/* posts and questions */}
-        <div className="w-full h-full flex">
-          <div className="w-1/3 bg-white">
-            <Button
-              variant="secondary"
-              className="w-full rounded-none bg-white hover:bg-slate-100"
-            >
-              Questions
-            </Button>
-          </div>
-          <div className="w-1/3 bg-white">
-            <Button
-              variant="secondary"
-              className="w-full rounded-none bg-white hover:bg-slate-100"
-            >
-              Answers
-            </Button>
-          </div>
-          <div className="w-1/3 bg-white">
-            <Button
-              variant="secondary"
-              className="w-full rounded-none bg-white hover:bg-slate-100"
-            >
-              Likes
-            </Button>
-          </div>
-          
-        </div>
+        <ProfileContent user={user} />    
       </div>
     </div>
   );

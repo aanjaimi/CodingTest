@@ -1,3 +1,5 @@
+import { Answer, Favorite, Question, QuestionLike } from "./question";
+
 export type Avatar = {
   path: string;
   minio: boolean;
@@ -13,6 +15,10 @@ export type User = {
   birthday: Date;
   email: string;
   avatar: Avatar;
+  questions: Question[];
+  answers: Answer[];
+  questionLikes: QuestionLike[];
+  favorites: Favorite[];
   createdAt: string;
   updatedAt: string;
 };
