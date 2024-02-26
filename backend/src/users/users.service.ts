@@ -117,4 +117,18 @@ export class UserService {
     });
     return following;
   }
+
+  async isFollowing(id: string) {
+    const following = await this.prismaService.friend.findMany({
+      where: { friendId: id },
+    });
+    return following;
+  }
+
+  async isFollower(id: string) {
+    const followers = await this.prismaService.friend.findMany({
+      where: { userId: id },
+    });
+    return followers;
+  }
 }

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { cn } from "../lib/utils";
 import { StateProvider } from "@/contexts/state-context";
 import Providers from "@/components/providers";
 import React from "react";

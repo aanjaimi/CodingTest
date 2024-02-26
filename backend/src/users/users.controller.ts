@@ -66,4 +66,14 @@ export class UserController {
   async getFollowing(@Param('id') id: string) {
     return await this.userService.getFollowing(id);
   }
+
+  @Get('follow/:id')
+  async isFollowing(@Param('id') id: string) {
+    return await this.userService.isFollowing(id);
+  }
+
+  @Get('follower/:id')
+  async isFollower(@Param('id') id: string) {
+    return await this.userService.isFollower(id);
+  }
 }
