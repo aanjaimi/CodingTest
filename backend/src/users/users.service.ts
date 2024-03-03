@@ -56,7 +56,6 @@ export class UserService {
   }
 
   async updateUser(user: User, body: any) {
-    console.log('update user');
     return await this.prismaService.user.update({
       where: { id: user.id },
       data: {
@@ -102,33 +101,5 @@ export class UserService {
     //     }),
     //   },
     // });
-  }
-
-  async getFollowers(id: string) {
-    const followers = await this.prismaService.friend.findMany({
-      where: { userId: id },
-    });
-    return followers;
-  }
-
-  async getFollowing(id: string) {
-    const following = await this.prismaService.friend.findMany({
-      where: { friendId: id },
-    });
-    return following;
-  }
-
-  async isFollowing(id: string) {
-    const following = await this.prismaService.friend.findMany({
-      where: { friendId: id },
-    });
-    return following;
-  }
-
-  async isFollower(id: string) {
-    const followers = await this.prismaService.friend.findMany({
-      where: { userId: id },
-    });
-    return followers;
   }
 }

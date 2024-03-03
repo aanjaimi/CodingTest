@@ -56,14 +56,14 @@ const QuestionData = ({ question, user }: QuestionDataProps) => {
         setLike(res);
       })
       .catch((err) => {
-        console.log("Get like failed: ", err);
+        console.log(err);
       });
     getFavorite(state?.user?.id, question)
       .then((res) => {
         setFavorite(res);
       })
       .catch((err) => {
-        console.log("Get favorite failed: ", err);
+        console.log(err);
       });
   }, [state.user, question]);
 
@@ -72,18 +72,17 @@ const QuestionData = ({ question, user }: QuestionDataProps) => {
     if (!like) {
       addLike(state?.user?.id, question)
         .then((res) => {
-          console.log("Add successfully: ", res);
+          
         })
         .catch((err) => {
-          console.log("Add failed: ", err);
+          console.log(err);
         });
     } else {
       removeLike(state?.user?.id, question)
         .then((res) => {
-          console.log("Remove successfully: ", res);
         })
         .catch((err) => {
-          console.log("Remove failed: ", err);
+          console.log(err);
         });
     }
     setLike(!like);
@@ -94,18 +93,16 @@ const QuestionData = ({ question, user }: QuestionDataProps) => {
     if (!favorite) {
       addFavorite(state?.user?.id, question)
         .then((res) => {
-          console.log("Add successfully: ", res);
         })
         .catch((err) => {
-          console.log("Add failed: ", err);
+          console.log(err);
         });
     } else {
       removeFavorite(state?.user?.id, question)
         .then((res) => {
-          console.log("Remove successfully: ", res);
         })
         .catch((err) => {
-          console.log("Remove failed: ", err);
+          console.log(err);
         });
     }
     setFavorite(!favorite);

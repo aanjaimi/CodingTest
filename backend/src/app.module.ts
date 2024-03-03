@@ -10,6 +10,7 @@ import { UserModule } from './users/users.module';
 import { QuestionModule } from './questions/questions.module';
 import { Notification } from 'rxjs';
 import { NotificationModule } from './notifications/notifications.module';
+import { FriendModule } from './friend/friend.module';
 // import { MinioModule } from './minio/minio.module';
 
 @Module({
@@ -26,6 +27,7 @@ import { NotificationModule } from './notifications/notifications.module';
     UserModule,
     QuestionModule,
     NotificationModule,
+    FriendModule,
     RedisModule.forRootAsync({
       inject: [ConfigService],
       useFactory(configService: ConfigService) {

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { User } from "@/types/user";
 import MyQuestionsList from "./questions-list";
+import { Question } from "@/types/question";
 
 type ProfileContentProps = {
   user: User | null;
@@ -12,6 +13,13 @@ const ProfileContent = ({ user }: ProfileContentProps) => {
   const [answer, setAnswer] = useState(false);
   const [like, setLike] = useState(false);
   const [favorite, setFavorite] = useState(false);
+  const [questions, setQuestions] = useState<Question[]>([]);
+
+  useEffect(() => {
+    if (user) setQuestions(user?.questions);
+    else setQuestions([]);
+  }, [user]);
+
   return (
     <div className="w-full h-full flex flex-col">
       <div className="w-full flex">
@@ -73,7 +81,9 @@ const ProfileContent = ({ user }: ProfileContentProps) => {
         </div>
       </div>
       <div className="w-full h-full">
-        {question && <MyQuestionsList questions={user?.questions} user={user} />}
+        {question && (
+          <MyQuestionsList questions={questions} user={user} />
+        )}
         {answer && <div>Answers</div>}
         {like && <div>Likes</div>}
         {favorite && <div>Favorites</div>}

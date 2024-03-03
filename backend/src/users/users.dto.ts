@@ -40,3 +40,11 @@ export class UserUpdateDTO {
   @Transform(({ value }) => new Date(value))
   birthday: Date;
 }
+
+export class FollowQueryDTO {
+  @IsString()
+  myId: string;
+
+  @IsString()
+  id: string;
+}

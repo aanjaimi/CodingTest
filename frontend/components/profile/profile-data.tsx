@@ -83,7 +83,7 @@ const ProfileData = ({ user }: ProfileDataProps) => {
       </div>
       {/* profile informations */}
       <div className="relative w-full h-full flex flex-col">
-        <Image src="/cover.png" alt="cover image" width={1000} height={80} />
+        <Image src="/cover.png" alt="cover image" width={1000} height={80} priority />
         <div className="w-[110px] h-[110px] p-1 absolute mt-[100px] ml-[20px] rounded-full bg-white">
           <Image
             src="/default-avatar.png"
@@ -93,7 +93,7 @@ const ProfileData = ({ user }: ProfileDataProps) => {
             className="bg-white hover:bg-slate-200 rounded-full"
           />
         </div>
-        <div className="flex items-start justify-end p-4">
+        <d`iv className="flex items-start justify-end p-4">
           {isMe ? <EditProfile /> : <ProfileDialog user={user} />}
         </div>
         <div className="p-4 flex flex-col space-y-4">

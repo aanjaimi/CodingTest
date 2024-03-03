@@ -10,6 +10,8 @@ import {
   UploadedFile,
   UseInterceptors,
   ParseFilePipeBuilder,
+  Post,
+  Delete,
 } from '@nestjs/common';
 import { UserService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
@@ -55,25 +57,5 @@ export class UserController {
     @Body() body: any,
   ) {
     return await this.userService.updateUser(user, body);
-  }
-
-  @Get('followers/:id')
-  async getFollowers(@Param('id') id: string) {
-    return await this.userService.getFollowers(id);
-  }
-
-  @Get('following/:id')
-  async getFollowing(@Param('id') id: string) {
-    return await this.userService.getFollowing(id);
-  }
-
-  @Get('follow/:id')
-  async isFollowing(@Param('id') id: string) {
-    return await this.userService.isFollowing(id);
-  }
-
-  @Get('follower/:id')
-  async isFollower(@Param('id') id: string) {
-    return await this.userService.isFollower(id);
   }
 }

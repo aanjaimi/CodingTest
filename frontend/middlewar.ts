@@ -6,7 +6,6 @@ export const config = {
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  console.log(pathname);
 
   const url = request.nextUrl.clone();
 
